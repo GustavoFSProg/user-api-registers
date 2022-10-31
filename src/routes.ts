@@ -10,5 +10,6 @@ routes.get('/', (req: Request, res: Response) => {
 
 routes.get('/all', usersController.getAll)
 routes.post('/register', usersController.registerUser)
+routes.post('/login', usersController.Login)
 
 export default routes
