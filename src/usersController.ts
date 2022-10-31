@@ -44,7 +44,7 @@ async function Login(req: Request, res: Response) {
     
     const token = await generateToken(user)
 
-    return res.status(200).send({ msg: "Login com Sucesso!", token })
+    return res.status(200).send({ token })
     
 
   } catch (error) {
