@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { Response, Request } from 'express'
 import md5 from 'md5'
-import { generateToken } from './jwt'
+import { generateToken, verifyToken } from './jwt'
 
 const prisma = new PrismaClient()
 
@@ -29,28 +29,39 @@ async function getAll(req: Request, res: Response) {
   } catch (error) {
     return res.status(400).send(error)
   }
-} 
-
+}
 
 async function Login(req: Request, res: Response) {
   try {
-
     const user = await prisma.users.findFirst({
-      where:{email: req.body.email, password: String(md5(req.body.password, process.env.SECRET as string & { asBytes: true })),
-} 
+      where: {
+        email: req.body.email,
+        password: String(md5(req.body.password, process.env.SECRET as string & { asBytes: true })),
+      },
     })
 
-    if (!user) return res.status(400).send({ msg: "Email ou senha invalidos!!" })
-    
+    if (!user) return res.status(400).send({ msg: 'Email ou senha invalidos!!' })
+
     const token = await generateToken(user)
 
     return res.status(200).send({ token })
-    
-
   } catch (error) {
     return res.status(400).send(error)
   }
 }
 
+async function verifyUserToken(req: Request, res: Response) {
+  try {
+    const Token = req.body.token
 
-export default { getAll,Login, registerUser }
+    const {decode}: any = await verifyToken(Token)
+
+    if(!decode) return res.status(200).json({msg: "Tokin invalido!!"})
+
+    return res.status(200).send({ decode })
+  } catch (error) {
+    return res.status(400).send(error)
+  }
+}
+
+export default { getAll, Login, registerUser, verifyUserToken }
