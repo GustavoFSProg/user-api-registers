@@ -52,13 +52,20 @@ async function Login(req: Request, res: Response) {
 
 async function verifyUserToken(req: Request, res: Response) {
   try {
-    const Token = req.body.token
+    const token = req.headers["token"]
+    // const Token = req.body.token
+    // const Token = req.params.token
+    
+    console.log(token)
+    // const Token =  req.body.token
 
-    const {decode}: any = await verifyToken(Token)
+    // req.headers["token"]
 
-    if(!decode) return res.status(200).json({msg: "Tokin invalido!!"})
+    const {decode}: any = await verifyToken(token)
 
-    return res.status(200).send({ decode })
+    if(!decode) return res.status(200).json({msg: "API - Tokin invalido!!"})
+
+    return res.status(200).send( decode)
   } catch (error) {
     return res.status(400).send(error)
   }
