@@ -50,25 +50,33 @@ async function Login(req: Request, res: Response) {
   }
 }
 
-async function verifyUserToken(req: Request, res: Response) {
-  try {
-    const token = req.headers["token"]
-    // const Token = req.body.token
-    // const Token = req.params.token
+// async function verifyUserToken(req: Request, res: Response) {
+//   try {
+//     const token = req.headers["token"]
     
-    console.log(token)
-    // const Token =  req.body.token
+//     console.log(token)
 
-    // req.headers["token"]
 
-    const {decode}: any = await verifyToken(token)
+//     const {decode}: any = await verifyToken(token)
 
-    if(!decode) return res.status(200).json({msg: "API - Tokin invalido!!"})
+//     if(!decode) return res.status(200).json({msg: "API - Tokin invalido!!"})
 
-    return res.status(200).send( decode)
+//     return res.status(200).send( decode)
+//   } catch (error) {
+//     return res.status(400).send(error)
+//   }
+// }
+
+
+async function isValidToken(req: Request, res: Response) {
+  try {
+    const { decode, error }: any = await verifyToken(req.body.token)
+    if (error && !decode) return res.status(200).send({ isValidToken: false })
+
+    return res.status(200).send({ isValidToken: true })
   } catch (error) {
-    return res.status(400).send(error)
+    return res.status(400).send({ error })
   }
 }
 
-export default { getAll, Login, registerUser, verifyUserToken }
+export default { getAll, Login, registerUser, isValidToken }
