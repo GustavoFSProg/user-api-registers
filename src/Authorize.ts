@@ -2,20 +2,23 @@ import { Request, Response } from "express"
 import { verifyToken } from "./jwt"
 
 export async function isAuthorized(req: Request, res: Response, next: () => any) {
-  const token = req.body.token || req.params.token || req.headers['token']
+  try {
+ 
+    const token = req.body.token || req.params.token || req.headers['token']
 
-  if (!token) return res.status(401).send({ error: 'Not authorized' })
+    if (!token) return res.status(401).send({ error: 'Not authorized' })
 
     console.log(token)
+  
+    const { decode, error }: any = await verifyToken(token)
 
-    const {decode}: any = await verifyToken(token)
+    if (error && !decode) return res.status(200).send({ isValidToken: false, msg: "Token Invalido!" })
 
-    if(!decode) return res.status(200).json({msg: "API - Tokin invalido!!"})
+    next()
 
-    res.send({ msg: 'Usuario logado' })
-    // next()
-    return res.status(200).send( decode)
+    return res.status(200).send({ isValidToken: true })
+  } catch (error) {
+    return res.status(400).send({ error })
+  }
  
-
-
 }

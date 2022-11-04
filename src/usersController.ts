@@ -70,7 +70,7 @@ async function Login(req: Request, res: Response) {
 
 async function isValidToken(req: Request, res: Response) {
   try {
-    const { decode, error }: any = await verifyToken(req.body.token)
+    const { decode, error }: any = await verifyToken(req.headers["token"])
     if (error && !decode) return res.status(200).send({ isValidToken: false })
 
     return res.status(200).send({ isValidToken: true })
