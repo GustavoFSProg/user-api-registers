@@ -15,7 +15,6 @@ export async function isAuthorized(req: Request, res: Response, next: () => any)
     if (error && !decode) return res.status(200).send({ isValidToken: false, msg: "Token Invalido!" })
 
     next()
-
     return res.status(200).send({ isValidToken: true })
   } catch (error) {
     return res.status(400).send({ error })

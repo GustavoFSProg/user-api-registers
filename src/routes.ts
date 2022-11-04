@@ -12,6 +12,6 @@ routes.get('/', (req: Request, res: Response) => {
 routes.get('/all', usersController.getAll)
 routes.post('/register',isAuthorized, usersController.registerUser)
 routes.post('/login', usersController.Login)
-// routes.post('/verify-token', usersController.isValidToken)
+routes.post('/verify-token', usersController.isValidToken)
 
 export default routes
